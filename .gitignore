@@ -1,5 +1,8 @@
+.vs*
 *.py
 *.cfg
 *.jpeg
 *.png
 *.jpeg
+/.vs
+.idea/
