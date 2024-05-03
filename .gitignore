@@ -1,5 +1,5 @@
 .vs*
-*.py
+testToBeIgnored.py
 *.cfg
 *.jpeg
 *.png
@@ -7,3 +7,5 @@
 /.vs
 .idea/
 main
+kurzgesagt
+testToBeIgnored.mojo

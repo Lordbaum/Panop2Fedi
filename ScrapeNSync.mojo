@@ -1,6 +1,9 @@
 from python import Python as py
 from Sync import Syncronizer
 from ConfigLoader import ConfigLoader
+from time import sleep
+from pathlib import Path
+from pathlib import cwd
 struct scraper:
     var softwear: String
     var username: String
@@ -29,23 +32,40 @@ struct scraper:
         try:
             #loads Instaloader
             var ILmod = py.import_module("instaloader")
-            var IL = ILmod.Instaloader()
+            var IL = ILmod.Instaloader(quiet = True, save_metadata = False, compress_json = False)
             #gets the profile
             var profile = ILmod.Profile.from_username(IL.context, self.username)
             self.bio = profile.biography
             
             var posts = profile.get_posts()
             for post in posts:
-                if scrapedInt >= cfgldr.settings["MaxScraping"].__int__(): return
+                if scrapedInt >= cfgldr.MaxScrapingS: return
                 scrapedInt += 1
-                #IL.format_filename(post, "post")
-
+                IL.format_filename(post, "post")
+                sleep(random.random_float64(0.05, 0.2))
                 try: 
-                    var postpipe = Post(description = post.caption, ori = "Instagram", accesbility_description = List[String](post.accesbility_description) )
+                    IL.download_post(post, self.username)
+                    var mediapaths: List[String] = List[String]("")
+                    var paths: List[Path] = cwd().joinpath(self.username).listdir()
+                    var description: String = ""
+                    for x in range(0,paths.__len__()):
+                        var path: Path = paths[x]
+                        var suffix = path.suffix()
+                        print(path)
+                        if suffix == ".txt": pass
+                            #description = path.read_text()
+                            #print("nicht zu dumm zum lesen")
+                        if suffix == ".jpg": 
+                            mediapaths.append("./" +self.username + "/" + path.__str__())
+                            print("mediapath appended: " + mediapaths[x])
+                    print(description)
+                    if description == "": description = post.caption
+                    var postpipe = Post(description = description, ori = "Instagram", mediapath = mediapaths)
                     sync.post(postpipe)
                 except:
-                    var postpipe = Post(description = post.caption, ori = "Instagram")
-                    sync.post(postpipe)
+                    print("an exception occord while creating the post")
+                    #var postpipe = Post(description = post.caption, ori = "Instagram")
+                    #sync.post(postpipe)
                 
         except: print ("failed to scrape instaaccount of " + self.username)
         
@@ -71,9 +91,3 @@ struct Post:
         self.mediapath = mediapath
         self.ori = ori
         self.listlength = 0
-        
-        """try:
-                if media[0] != None:
-                    self.listlength = media.__len__()
-        except: print("the init of the post failed at the media check")
-        """
