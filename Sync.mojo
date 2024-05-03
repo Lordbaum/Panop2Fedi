@@ -79,8 +79,8 @@ struct Syncronizer:
                 if description.__len__() >= 500: 
                     description = textshortener(description,500)
                 #this secton takes the paths of the media and adds it to the mastodon post
-                if (post.mediapath[1] != ""):
-                    print("hi")
+                if post.mediapath:
+                    
                     var ids = List[PythonObject]()
                     try:
                         
@@ -90,13 +90,9 @@ struct Syncronizer:
                         if post.mediapath.__len__() > 2: 
                             print("sorry but at the moment Mojo dose not support list passing to python so we can only post one picture for the post")
                     except: print("ids failed")
-                    print(ids.__len__())
-                    print("will post with pictures")
                     var str = post.mediapath[1]
-                    print("str: " + str)
                     var id = self.account.media_post(str)
-                    print("description: " + description)
-                    self.account.status_post(status= description, mediaid = id)
+                    self.account.status_post(status= description, media_ids = id)
                     
                 else: 
                     self.account.status_post(status= description)

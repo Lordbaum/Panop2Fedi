@@ -56,7 +56,7 @@ struct scraper:
                             #description = path.read_text()
                             #print("nicht zu dumm zum lesen")
                         if suffix == ".jpg": 
-                            mediapaths.append("./" +self.username + "/" + path.__str__())
+                            mediapaths.append("./" + self.username + "/" + path.__str__())
                             print("mediapath appended: " + mediapaths[x])
                     print(description)
                     if description == "": description = post.caption
